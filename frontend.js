@@ -240,7 +240,9 @@ class RoWebApp {
         });
         const targetSection = document.getElementById(sectionId);
         if (targetSection) targetSection.style.display = 'block';
-        this.sound("click.mp3");
+        if (document.getElementById) {
+            this.sound('click.mp3');
+        };
     }
 
     switchdiv(hideId, showId, displayType = 'block') {
@@ -248,7 +250,9 @@ class RoWebApp {
         const showElement = document.getElementById(showId);
         if (hideElement) hideElement.style.display = 'none';
         if (showElement) showElement.style.display = displayType;
-        this.sound("click.mp3");
+        if (document.getElementById) {
+            this.sound('click.mp3');
+        };
     }
 
     setRandomBanner() {
@@ -342,19 +346,22 @@ class RoWebApp {
         
         if (newCategory === 'All' || newCategory === 'None') {
             alert("Category name cannot be 'All' or 'None'!");
+            this.sound("ouch.mp3");
             return;
         }
         
         if (this.state.categories.includes(newCategory)) {
             alert("This category already exists!");
+            this.sound("ouch.mp3");
             return;
         }
         
-        this.state.categories.push(newCategory);
+        if (this.state.categories.push(newCategory)) {
+            this.sound("click.mp3")
+        }
         this.storageSet('categories', this.state.categories);
         newCategoryInput.value = '';
         this.populateCategoryDropdowns();
-        this.sound("splat.mp3");
     }
 
     manageCategories() {
@@ -380,7 +387,9 @@ class RoWebApp {
             container.style.display = 'none';
             manageBtn.style.display = 'block';
         }
-        this.sound("click.mp3");
+        if (document.getElementById) {
+            this.sound('click.mp3');
+        };
     }
 
     closeCategories() {
@@ -391,7 +400,9 @@ class RoWebApp {
         container.innerHTML = '';
         container.style.display = 'none';
         manageBtn.style.display = 'block';
-        this.sound("click.mp3");
+        if (document.getElementById) {
+            this.sound('click.mp3');
+        };
     }
 
     deleteCategory(category) {
