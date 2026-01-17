@@ -400,9 +400,7 @@ class RoWebApp {
         container.innerHTML = '';
         container.style.display = 'none';
         manageBtn.style.display = 'block';
-        if (document.getElementById) {
-            this.sound('click.mp3');
-        };
+        this.sound('click.mp3');
     }
 
     deleteCategory(category) {
@@ -421,7 +419,6 @@ class RoWebApp {
         this.storageSet('places', savedPlaces);
         
         this.populateCategoryDropdowns();
-        this.renderPlaces();
         this.sound("collide.mp3");
     }
 
