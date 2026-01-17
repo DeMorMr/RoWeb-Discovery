@@ -387,9 +387,7 @@ class RoWebApp {
             container.style.display = 'none';
             manageBtn.style.display = 'block';
         }
-        if (document.getElementById) {
-            this.sound('click.mp3');
-        };
+        this.sound('click.mp3');
     }
 
     closeCategories() {
