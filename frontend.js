@@ -12,7 +12,7 @@ class RoWebApp {
             playlist: [],
             currentTrack: 0,
             playing: false,
-            userInteracted: false,
+            //userInteracted: false,
             isSeeking: false,
             
             // Places
@@ -210,7 +210,8 @@ class RoWebApp {
 
     // ==================== SOUND SYSTEM ====================
     sound(name) {
-        if (!this.state.userInteracted) return true;
+        // userInteracted !!! SUCH A BAD FUNCTION !!! Need delete in future
+        //if (!this.state.userInteracted) return true;
         
         // Reuse available audio elements
         const availableAudio = this.state.audioPool.find(a => a.paused || a.ended);
@@ -235,7 +236,7 @@ class RoWebApp {
         }
         
         audio.src = 'data/main/sfx/' + soundFile;
-        audio.autoplay = true;
+        audio.play();
         return true;
     }
 
@@ -1079,7 +1080,7 @@ class RoWebApp {
     }
 
     togglePlay() {
-        this.state.userInteracted = true;
+        //this.state.userInteracted = true;
         
         if (!this.state.player.src) this.loadTrack();
         
@@ -1104,14 +1105,14 @@ class RoWebApp {
     }
 
     nextTrack() {
-        this.state.userInteracted = true;
+        //this.state.userInteracted = true;
         this.state.currentTrack = (this.state.currentTrack + 1) % this.state.playlist.length;
         this.loadTrack();
         if (this.state.playing) this.playAudio();
     }
 
     previousTrack() {
-        this.state.userInteracted = true;
+        //this.state.userInteracted = true;
         this.state.currentTrack = (this.state.currentTrack - 1 + this.state.playlist.length) % this.state.playlist.length;
         this.loadTrack();
         if (this.state.playing) this.playAudio();
