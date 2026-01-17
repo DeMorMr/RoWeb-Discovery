@@ -155,9 +155,9 @@ class RoWebApp {
         document.getElementById('importFile')?.addEventListener('change', (e) => this.handleFileSelect(e));
 
         // One-time user interaction
-        document.addEventListener('click', () => {
-            this.state.userInteracted = true;
-        }, { once: true });
+        //document.addEventListener('click', () => {
+        //    this.state.userInteracted = true;
+        //}, { once: true });
     }
 
     loadUI() {
