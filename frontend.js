@@ -204,7 +204,7 @@ class RoWebApp {
     }
 
     // ==================== SOUND SYSTEM ====================
-    sound(name) {
+    sfx(name) {
 
         // Reuse available audio elements
         const availableAudio = this.state.audioPool.find(a => a.paused || a.ended);
@@ -241,7 +241,7 @@ class RoWebApp {
         const targetSection = document.getElementById(sectionId);
         if (targetSection) targetSection.style.display = 'block';
         if (document.getElementById) {
-            this.sound('click.mp3');
+            this.sfx('click.mp3');
         };
     }
 
@@ -251,7 +251,7 @@ class RoWebApp {
         if (hideElement) hideElement.style.display = 'none';
         if (showElement) showElement.style.display = displayType;
         if (document.getElementById) {
-            this.sound('click.mp3');
+            this.sfx('click.mp3');
         };
     }
 
@@ -334,25 +334,25 @@ class RoWebApp {
         const newCategory = newCategoryInput.value.trim();
         if (!newCategory) {
             alert("Please enter a category name!");
-            this.sound("ouch.mp3");
+            this.sfx("ouch.mp3");
             return;
         }
         
         if (newCategory.length > 10) {
             alert("Category name cannot exceed 10 characters!");
-            this.sound("ouch.mp3");
+            this.sfx("ouch.mp3");
             return;
         }
         
         if (newCategory === 'All' || newCategory === 'None') {
             alert("Category name cannot be 'All' or 'None'!");
-            this.sound("ouch.mp3");
+            this.sfx("ouch.mp3");
             return;
         }
         
         if (this.state.categories.includes(newCategory)) {
             alert("This category already exists!");
-            this.sound("ouch.mp3");
+            this.sfx("ouch.mp3");
             return;
         }
         
@@ -360,7 +360,7 @@ class RoWebApp {
         this.storageSet('categories', this.state.categories);
         newCategoryInput.value = '';
         this.populateCategoryDropdowns();
-        this.sound("click.mp3")
+        this.sfx("click.mp3")
     }
 
     manageCategories() {
@@ -386,7 +386,7 @@ class RoWebApp {
             container.style.display = 'none';
             manageBtn.style.display = 'block';
         }
-        this.sound('click.mp3');
+        this.sfx('click.mp3');
     }
 
     closeCategories() {
@@ -397,12 +397,12 @@ class RoWebApp {
         container.innerHTML = '';
         container.style.display = 'none';
         manageBtn.style.display = 'block';
-        this.sound('click.mp3');
+        this.sfx('click.mp3');
     }
 
     deleteCategory(category) {
         if (!confirm(`Delete category "${category}"? All places in this category will be moved to "None".`)) {
-            this.sound("ouch.mp3");
+            this.sfx("ouch.mp3");
             return;
         }
         
@@ -416,7 +416,7 @@ class RoWebApp {
         this.storageSet('places', savedPlaces);
         
         this.populateCategoryDropdowns();
-        this.sound("collide.mp3");
+        this.sfx("collide.mp3");
     }
 
     // ==================== PLACE MANAGEMENT ====================
@@ -433,13 +433,13 @@ class RoWebApp {
         
         if (name.length > 50) {
             alert("Place name cannot exceed 50 characters!");
-            this.sound("ouch.mp3");
+            this.sfx("ouch.mp3");
             return;
         }
         
         if (!name || !url) {
             alert("Please fill both fields!");
-            this.sound("ouch.mp3");
+            this.sfx("ouch.mp3");
             return;
         }
         
@@ -480,7 +480,7 @@ class RoWebApp {
         this.storageSet('places', savedPlaces);
         this.renderPlaces();
         this.clearForm();
-        this.sound('splat.mp3');
+        this.sfx('splat.mp3');
     }
 
     clearForm() {
@@ -505,7 +505,7 @@ class RoWebApp {
         savedPlaces.splice(index, 1);
         this.storageSet('places', savedPlaces);
         this.renderPlaces();
-        this.sound("collide.mp3");
+        this.sfx("collide.mp3");
     }
 
     startEditPlace(index) {
@@ -536,7 +536,7 @@ class RoWebApp {
                 <button onclick="app.renderPlaces()">Cancel</button>
             </div>
         `;
-        this.sound("bass.mp3");
+        this.sfx("bass.mp3");
     }
 
     saveEditedPlace(index) {
@@ -574,13 +574,13 @@ class RoWebApp {
         
         this.storageSet('places', savedPlaces);
         this.renderPlaces();
-        this.sound("splat.mp3");
+        this.sfx("splat.mp3");
     }
 
     toggleEditMode() {
         this.state.editMode = !this.state.editMode;
         this.renderPlaces();
-        this.sound(this.state.editMode ? "click.mp3" : "splat.mp3");
+        this.sfx(this.state.editMode ? "click.mp3" : "splat.mp3");
     }
 
     // ==================== PLACES RENDERING ====================
@@ -627,7 +627,7 @@ class RoWebApp {
         const displayCategory = place.category ? place.category : 'None';
         return `
         <div class="place" data-id="${place.originalIndex}">
-            <a onclick="app.sound('splat.mp3')" href="${place.url}" target="_blank">
+            <a onclick="app.sfx('splat.mp3')" href="${place.url}" target="_blank">
                 <img id="img-${place.originalIndex}" src="data/main/loading.webp" alt="${place.name}" title="${place.name}" decoding="async">
                 ${!this.state.editMode ? `<t><small>${place.name}</small></t><br>` : ''}
             </a>
@@ -646,7 +646,7 @@ class RoWebApp {
         <div class="empty-message">
             What's here is empty :(<br>
             Want to see my list?<br>
-            <img src='data/main/teddy.png' onclick="app.sound(['1.mp3','2.mp3','3.mp3','4.mp3'])" alt="teddy" width="115px" title='Teddy Bloxpin'><br>
+            <img src='data/main/teddy.png' onclick="app.sfx(['1.mp3','2.mp3','3.mp3','4.mp3'])" alt="teddy" width="115px" title='Teddy Bloxpin'><br>
             <button onclick="app.loadDefaultList()">Load</button>
         </div>`;
     }
@@ -678,7 +678,7 @@ class RoWebApp {
     changePage(newPage) {
         this.state.currentPage = newPage;
         this.renderPlaces();
-        this.sound("pageturn.mp3");
+        this.sfx("pageturn.mp3");
     }
 
     clearAllPlaces() {
@@ -687,7 +687,7 @@ class RoWebApp {
         this.storageSet('categories', ['All','None']);
         this.clearThumbnailCache();
         this.renderPlaces();
-        this.sound("collide.mp3");
+        this.sfx("collide.mp3");
         location.reload();
     }
 
@@ -819,7 +819,7 @@ class RoWebApp {
         currentSet.forEach(place => {
             container.innerHTML += `
                 <div class='UserPlace'>
-                    <a onclick="app.sound('splat.mp3')" href='${place.url}' target='_blank'>
+                    <a onclick="app.sfx('splat.mp3')" href='${place.url}' target='_blank'>
                         <img src='data/main/loading.webp' data-place-id="${place.id}" alt="${place.name}" title='${place.name}'><br>
                     </a>
                 </div>
@@ -931,7 +931,7 @@ class RoWebApp {
             document.body.removeChild(a);
             URL.revokeObjectURL(url);
         }, 100);
-        sound('click.mp3');
+        sfx('click.mp3');
     }
 
     handleFileSelect(event) {
@@ -966,7 +966,7 @@ class RoWebApp {
             }
         };
         reader.readAsText(file);
-        this.sound("victory.mp3");
+        this.sfx("victory.mp3");
         this.startConfetti();
     }
 
@@ -1047,12 +1047,12 @@ class RoWebApp {
                 this.importPlaces(importedPlaces);
                 this.nextCoolSet();
                 alert("Successfully imported default list!");
-                this.sound("victory.mp3");
+                this.sfx("victory.mp3");
             })
             .catch(error => {
                 alert(`Error loading default list: ${error.message}\nMake sure My_Fav_List.json is in the same directory`);
                 console.error("Load error:", error);
-                this.sound("ouch.mp3");
+                this.sfx("ouch.mp3");
             });
     }
 
@@ -1200,7 +1200,7 @@ class RoWebApp {
 const app = new RoWebApp();
 
 // Global functions for HTML onclick handlers
-function sound(name) { return app.sound(name); }
+function sfx(name) { return app.sfx(name); }
 function ExtraClearStorage() { return app.ExtraClearStorage(); }
 function switchdiv(hideId, showId, displayType) { return app.switchdiv(hideId, showId, displayType); }
 function switchSection(sectionId) { return app.switchSection(sectionId); }
