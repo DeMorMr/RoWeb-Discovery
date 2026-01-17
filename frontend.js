@@ -685,7 +685,7 @@ class RoWebApp {
         if (!confirm("Are you sure you want to delete ALL saved places? This action cannot be undone!")) return;
         //
         this.storageSet('places', []);
-        this.storageSet('categories');
+        this.storageSet('categories', ['All','None']);
         this.clearThumbnailCache();
         this.renderPlaces();
         this.sound("collide.mp3");
