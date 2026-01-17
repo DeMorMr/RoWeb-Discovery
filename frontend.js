@@ -356,12 +356,11 @@ class RoWebApp {
             return;
         }
         
-        if (this.state.categories.push(newCategory)) {
-            this.sound("click.mp3")
-        }
+        this.state.categories.push(newCategory);
         this.storageSet('categories', this.state.categories);
         newCategoryInput.value = '';
         this.populateCategoryDropdowns();
+        this.sound("click.mp3")
     }
 
     manageCategories() {
