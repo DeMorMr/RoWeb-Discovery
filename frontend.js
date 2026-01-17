@@ -688,6 +688,7 @@ class RoWebApp {
         this.clearThumbnailCache();
         this.renderPlaces();
         this.sound("collide.mp3");
+        location.reload();
     }
 
     // ==================== THUMBNAIL MANAGEMENT ====================
