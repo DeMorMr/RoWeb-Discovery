@@ -477,7 +477,9 @@ class RoWebApp {
             }).replace(',', '')
         };
         
-        savedPlaces.push(place);
+        if(savedPlaces.push(place)){
+            this.sound('splat.mp3');
+        }
         this.storageSet('places', savedPlaces);
         this.renderPlaces();
         this.clearForm();
