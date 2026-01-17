@@ -476,7 +476,7 @@ class RoWebApp {
             }).replace(',', '')
         };
         
-
+        savedPlaces.push(place);
         this.storageSet('places', savedPlaces);
         this.renderPlaces();
         this.clearForm();
@@ -683,7 +683,6 @@ class RoWebApp {
 
     clearAllPlaces() {
         if (!confirm("Are you sure you want to delete ALL saved places? This action cannot be undone!")) return;
-        //
         this.storageSet('places', []);
         this.storageSet('categories', ['All','None']);
         this.clearThumbnailCache();
