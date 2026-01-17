@@ -928,11 +928,11 @@ class RoWebApp {
         a.download = 'saved.json';
         document.body.appendChild(a);
         a.click();
-        
         setTimeout(() => {
             document.body.removeChild(a);
             URL.revokeObjectURL(url);
         }, 100);
+        sound('click.mp3');
     }
 
     handleFileSelect(event) {
