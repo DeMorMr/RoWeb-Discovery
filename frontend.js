@@ -12,7 +12,6 @@ class RoWebApp {
             playlist: [],
             currentTrack: 0,
             playing: false,
-            //userInteracted: false,
             isSeeking: false,
             
             // Places
@@ -154,10 +153,6 @@ class RoWebApp {
         document.getElementById('nextCoolBtn')?.addEventListener('click', () => this.nextCoolSet());
         document.getElementById('importFile')?.addEventListener('change', (e) => this.handleFileSelect(e));
 
-        // One-time user interaction
-        //document.addEventListener('click', () => {
-        //    this.state.userInteracted = true;
-        //}, { once: true });
     }
 
     loadUI() {
@@ -210,9 +205,7 @@ class RoWebApp {
 
     // ==================== SOUND SYSTEM ====================
     sound(name) {
-        // userInteracted !!! SUCH A BAD FUNCTION !!! Need delete in future
-        //if (!this.state.userInteracted) return true;
-        
+
         // Reuse available audio elements
         const availableAudio = this.state.audioPool.find(a => a.paused || a.ended);
         const audio = availableAudio || new Audio();
@@ -480,7 +473,6 @@ class RoWebApp {
         
         savedPlaces.push(place);
         this.storageSet('places', savedPlaces);
-        this.sound("splat.mp3");
         this.renderPlaces();
         this.clearForm();
     }
@@ -891,7 +883,6 @@ class RoWebApp {
         
         this.updateCoolPlaces();
         this.updateCoolNavigation();
-        this.sound("click.mp3");
     }
 
     prevCoolSet() {
@@ -900,7 +891,6 @@ class RoWebApp {
             this.updateCoolPlaces();
             this.updateCoolNavigation();
         }
-        this.sound("click.mp3");
     }
 
     updateCoolNavigation() {
@@ -936,8 +926,6 @@ class RoWebApp {
             document.body.removeChild(a);
             URL.revokeObjectURL(url);
         }, 100);
-        
-        this.sound("click.mp3");
     }
 
     handleFileSelect(event) {
@@ -1080,8 +1068,6 @@ class RoWebApp {
     }
 
     togglePlay() {
-        //this.state.userInteracted = true;
-        
         if (!this.state.player.src) this.loadTrack();
         
         if (this.state.playing) {
@@ -1105,14 +1091,12 @@ class RoWebApp {
     }
 
     nextTrack() {
-        //this.state.userInteracted = true;
         this.state.currentTrack = (this.state.currentTrack + 1) % this.state.playlist.length;
         this.loadTrack();
         if (this.state.playing) this.playAudio();
     }
 
     previousTrack() {
-        //this.state.userInteracted = true;
         this.state.currentTrack = (this.state.currentTrack - 1 + this.state.playlist.length) % this.state.playlist.length;
         this.loadTrack();
         if (this.state.playing) this.playAudio();
