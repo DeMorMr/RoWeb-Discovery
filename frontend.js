@@ -228,7 +228,7 @@ class RoWebApp {
             soundFile = name[Math.floor(Math.random() * name.length)];
         }
         
-        audio.src = 'data/main/sfx/' + soundFile;
+        audio.src = 'data/main/sfx/' + soundFile + '.mp3';
         audio.play();
         return true;
     }
@@ -241,7 +241,7 @@ class RoWebApp {
         const targetSection = document.getElementById(sectionId);
         if (targetSection) targetSection.style.display = 'block';
         if (document.getElementById) {
-            this.sfx('click.mp3');
+            this.sfx('click');
         };
     }
 
@@ -251,7 +251,7 @@ class RoWebApp {
         if (hideElement) hideElement.style.display = 'none';
         if (showElement) showElement.style.display = displayType;
         if (document.getElementById) {
-            this.sfx('click.mp3');
+            this.sfx('click');
         };
     }
 
@@ -292,6 +292,7 @@ class RoWebApp {
                 element.style.backgroundSize = 'cover';
                 element.style.backgroundPosition = 'center';
                 element.style.backgroundRepeat = 'no-repeat';
+                element.style.backgroundAttachment = 'fixed';
             }
         } catch (error) {
             console.error('Background error:', error);
@@ -334,25 +335,25 @@ class RoWebApp {
         const newCategory = newCategoryInput.value.trim();
         if (!newCategory) {
             alert("Please enter a category name!");
-            this.sfx("ouch.mp3");
+            this.sfx("ouch");
             return;
         }
         
         if (newCategory.length > 10) {
             alert("Category name cannot exceed 10 characters!");
-            this.sfx("ouch.mp3");
+            this.sfx("ouch");
             return;
         }
         
         if (newCategory === 'All' || newCategory === 'None') {
             alert("Category name cannot be 'All' or 'None'!");
-            this.sfx("ouch.mp3");
+            this.sfx("ouch");
             return;
         }
         
         if (this.state.categories.includes(newCategory)) {
             alert("This category already exists!");
-            this.sfx("ouch.mp3");
+            this.sfx("ouch");
             return;
         }
         
@@ -360,7 +361,7 @@ class RoWebApp {
         this.storageSet('categories', this.state.categories);
         newCategoryInput.value = '';
         this.populateCategoryDropdowns();
-        this.sfx("click.mp3")
+        this.sfx("click")
     }
 
     manageCategories() {
@@ -386,7 +387,7 @@ class RoWebApp {
             container.style.display = 'none';
             manageBtn.style.display = 'block';
         }
-        this.sfx('click.mp3');
+        this.sfx('click');
     }
 
     closeCategories() {
@@ -397,12 +398,12 @@ class RoWebApp {
         container.innerHTML = '';
         container.style.display = 'none';
         manageBtn.style.display = 'block';
-        this.sfx('click.mp3');
+        this.sfx('click');
     }
 
     deleteCategory(category) {
         if (!confirm(`Delete category "${category}"? All places in this category will be moved to "None".`)) {
-            this.sfx("ouch.mp3");
+            this.sfx("ouch");
             return;
         }
         
@@ -416,7 +417,7 @@ class RoWebApp {
         this.storageSet('places', savedPlaces);
         
         this.populateCategoryDropdowns();
-        this.sfx("collide.mp3");
+        this.sfx("collide");
     }
 
     // ==================== PLACE MANAGEMENT ====================
@@ -433,13 +434,13 @@ class RoWebApp {
         
         if (name.length > 50) {
             alert("Place name cannot exceed 50 characters!");
-            this.sfx("ouch.mp3");
+            this.sfx("ouch");
             return;
         }
         
         if (!name || !url) {
             alert("Please fill both fields!");
-            this.sfx("ouch.mp3");
+            this.sfx("ouch");
             return;
         }
         
@@ -480,7 +481,7 @@ class RoWebApp {
         this.storageSet('places', savedPlaces);
         this.renderPlaces();
         this.clearForm();
-        this.sfx('splat.mp3');
+        this.sfx('splat');
     }
 
     clearForm() {
@@ -505,7 +506,7 @@ class RoWebApp {
         savedPlaces.splice(index, 1);
         this.storageSet('places', savedPlaces);
         this.renderPlaces();
-        this.sfx("collide.mp3");
+        this.sfx("collide");
     }
 
     startEditPlace(index) {
@@ -536,7 +537,7 @@ class RoWebApp {
                 <button onclick="app.renderPlaces()">Cancel</button>
             </div>
         `;
-        this.sfx("bass.mp3");
+        this.sfx("bass");
     }
 
     saveEditedPlace(index) {
@@ -574,13 +575,13 @@ class RoWebApp {
         
         this.storageSet('places', savedPlaces);
         this.renderPlaces();
-        this.sfx("splat.mp3");
+        this.sfx("splat");
     }
 
     toggleEditMode() {
         this.state.editMode = !this.state.editMode;
         this.renderPlaces();
-        this.sfx(this.state.editMode ? "click.mp3" : "splat.mp3");
+        this.sfx(this.state.editMode ? "click" : "splat");
     }
 
     // ==================== PLACES RENDERING ====================
@@ -627,7 +628,7 @@ class RoWebApp {
         const displayCategory = place.category ? place.category : 'None';
         return `
         <div class="place" data-id="${place.originalIndex}">
-            <a onclick="app.sfx('splat.mp3')" href="${place.url}" target="_blank">
+            <a onclick="app.sfx('splat')" href="${place.url}" target="_blank">
                 <img id="img-${place.originalIndex}" src="data/main/loading.webp" alt="${place.name}" title="${place.name}" decoding="async">
                 ${!this.state.editMode ? `<t><small>${place.name}</small></t><br>` : ''}
             </a>
@@ -646,7 +647,7 @@ class RoWebApp {
         <div class="empty-message">
             What's here is empty :(<br>
             Want to see my list?<br>
-            <img src='data/main/teddy.png' onclick="app.sfx(['1.mp3','2.mp3','3.mp3','4.mp3'])" alt="teddy" width="115px" title='Teddy Bloxpin'><br>
+            <img src='data/main/teddy.png' onclick="app.sfx(['teddy1','teddy2','teddy3','teddy4'])" alt="teddy" width="115px" title='Teddy Bloxpin'><br>
             <button onclick="app.loadDefaultList()">Load</button>
         </div>`;
     }
@@ -678,7 +679,7 @@ class RoWebApp {
     changePage(newPage) {
         this.state.currentPage = newPage;
         this.renderPlaces();
-        this.sfx("pageturn.mp3");
+        this.sfx("pageturn");
     }
 
     clearAllPlaces() {
@@ -687,7 +688,7 @@ class RoWebApp {
         this.storageSet('categories', ['All','None']);
         this.clearThumbnailCache();
         this.renderPlaces();
-        this.sfx("collide.mp3");
+        this.sfx("collide");
         location.reload();
     }
 
@@ -819,7 +820,7 @@ class RoWebApp {
         currentSet.forEach(place => {
             container.innerHTML += `
                 <div class='UserPlace'>
-                    <a onclick="app.sfx('splat.mp3')" href='${place.url}' target='_blank'>
+                    <a onclick="app.sfx('splat')" href='${place.url}' target='_blank'>
                         <img src='data/main/loading.webp' data-place-id="${place.id}" alt="${place.name}" title='${place.name}'><br>
                     </a>
                 </div>
@@ -931,7 +932,7 @@ class RoWebApp {
             document.body.removeChild(a);
             URL.revokeObjectURL(url);
         }, 100);
-        sfx('click.mp3');
+        sfx('click');
     }
 
     handleFileSelect(event) {
@@ -966,7 +967,7 @@ class RoWebApp {
             }
         };
         reader.readAsText(file);
-        this.sfx("victory.mp3");
+        this.sfx("victory");
         this.startConfetti();
     }
 
@@ -1047,12 +1048,12 @@ class RoWebApp {
                 this.importPlaces(importedPlaces);
                 this.nextCoolSet();
                 alert("Successfully imported default list!");
-                this.sfx("victory.mp3");
+                this.sfx("victory");
             })
             .catch(error => {
                 alert(`Error loading default list: ${error.message}\nMake sure My_Fav_List.json is in the same directory`);
                 console.error("Load error:", error);
-                this.sfx("ouch.mp3");
+                this.sfx("ouch");
             });
     }
 
