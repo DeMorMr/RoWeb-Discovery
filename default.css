@@ -10,11 +10,18 @@ Want to help us? Join to our server!
 body {max-width:900px;margin:0 auto;padding:20px;
  background-image:url('data/main/loading.webp');
  font-family:Comic-Sans-MS, sans-serif;
- image-rendering:pixelated;background-size:100%;
+ image-rendering:pixelated;
+  background-size:cover;
+  background-position:center;
+  background-repeat:no-repeat;
+  background-attachment:fixed;
 }
 
 header {border:1px solid #010101;text-align:center;width:900px;height:70px;} header img{margin-top:5px;}
-.banner{background-image:url('data/main/loading.webp');background-size:cover;background-position:center;background-repeat:no-repeat;transition:background-image 0.5s ease-in-out;}
+.banner{background-image:url('data/main/loading.webp');background-size:cover;background-position:center;background-repeat:no-repeat;
+transition:all 0.5s ease-in-out;
+}
+
 footer{font-family:Arial;font-size:10px;text-align:center;padding-top:10px;}
 container{display:flex;gap:10px;}
 a{text-decoration:none;color:#2900ff;}

@@ -267,7 +267,7 @@ class RoWebApp {
     }
 
     setRandomBackground(selector = 'body', defaults = null, storageKey = 'customBackgrounds') {
-        const defaultBanners = defaults || [
+        const defaultBackgrounds = defaults || [
             "data/main/bg/RobloxScreenShot20230930_102558741.jpeg",
             "data/main/bg/p8wXp8.jpg",
             "data/main/bg/OIP%20(3).webp",
@@ -282,17 +282,13 @@ class RoWebApp {
         ];
         
         try {
-            const customBanners = this.storageGet(storageKey) || [];
-            const banners = customBanners.length > 0 ? customBanners : defaultBanners;
-            const randomBanner = banners[Math.floor(Math.random() * banners.length)];
+            const customBackgrounds = this.storageGet(storageKey) || [];
+            const Backgrounds = customBackgrounds.length > 0 ? customBackgrounds : defaultBackgrounds;
+            const randomBackground = Backgrounds[Math.floor(Math.random() * Backgrounds.length)];
             const element = document.querySelector(selector);
             
             if (element) {
-                element.style.backgroundImage = `url('${randomBanner}')`;
-                element.style.backgroundSize = 'cover';
-                element.style.backgroundPosition = 'center';
-                element.style.backgroundRepeat = 'no-repeat';
-                element.style.backgroundAttachment = 'fixed';
+                element.style.backgroundImage = `url('${randomBackground}')`;
             }
         } catch (error) {
             console.error('Background error:', error);
