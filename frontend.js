@@ -158,6 +158,7 @@ class RoWebApp {
     loadUI() {
         this.setRandomBackground();
         this.setRandomBanner();
+        this.rimg(['NewFrontPageGuy.png','guest.png'], 'Figure')
         this.populateCategoryDropdowns();
         this.renderPlaces();
         this.nextCoolSet();
@@ -165,6 +166,11 @@ class RoWebApp {
         this.state.player.volume = 0.7;
     }
 
+    rimg(images, id) {
+        const element = document.getElementById(id);
+        const randomIndex = Math.floor(Math.random() * images.length);
+        element.src = 'data/main/' + images[randomIndex];
+    }
     // ==================== UTILITY FUNCTIONS ====================
     shufflePlaylist() {
         const newArray = [...this.state.playlist];

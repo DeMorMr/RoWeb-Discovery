@@ -15,6 +15,7 @@ body {max-width:900px;margin:0 auto;padding:20px;
   background-position:center;
   background-repeat:no-repeat;
   background-attachment:fixed;
+  transition:all 0.5s ease-in-out;
 }
 
 header {border:1px solid #010101;text-align:center;width:900px;height:70px;} header img{margin-top:5px;}
