@@ -37,7 +37,9 @@ class RoWebApp {
         this.PROXY_SERVERS = [
             "https://api.allorigins.win/raw?url=",
             "https://corsproxy.io/?",
-            "https://api.codetabs.com/v1/proxy?quest="
+            "https://api.codetabs.com/v1/proxy?quest=",
+            "https://api.cors.lol/?url=",
+            "https://crossorigin.me/"
         ];
 
         this.init();
