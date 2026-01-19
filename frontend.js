@@ -33,7 +33,7 @@ class RoWebApp {
             audioPool: []
         };
 
-        this.BATCH_SIZE = 5;
+        this.BATCH_SIZE = 15;
         this.PROXY_SERVERS = [
             //"https://cors-anywhere.com/",
           //  "https://api.allorigins.win/raw?url=",
