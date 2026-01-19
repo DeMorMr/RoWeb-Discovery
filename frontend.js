@@ -36,11 +36,12 @@ class RoWebApp {
         this.BATCH_SIZE = 5;
         this.PROXY_SERVERS = [
             //"https://cors-anywhere.com/",
-            "https://api.allorigins.win/raw?url=",
-            //"https://corsproxy.io/?url=",
-            "https://api.codetabs.com/v1/proxy?quest=",
-            "https://api.cors.lol/?url=",
-            "https://crossorigin.me/"
+          //  "https://api.allorigins.win/raw?url=",
+          //  "https://corsproxy.io/?url=",
+           // "https://api.codetabs.com/v1/proxy?quest=",
+           // "roproxy.com"
+           // "https://api.cors.lol/?url=",
+           // "https://crossorigin.me/"
         ];
 
         this.init();
@@ -761,11 +762,11 @@ class RoWebApp {
         
         if (uncachedIds.length === 0) return result;
         
-        const apiUrl = `https://thumbnails.roblox.com/v1/places/gameicons?placeIds=${uncachedIds.join(',')}&size=${size}x${size}&format=Png&isCircular=false`;
+        const apiUrl = `https://thumbnails.roproxy.com/v1/places/gameicons?placeIds=${uncachedIds.join(',')}&size=${size}x${size}&format=Png&isCircular=false`;
         
         for (const proxy of this.PROXY_SERVERS) {
             try {
-                const response = await fetch(proxy + encodeURIComponent(apiUrl), {
+                const response = await fetch(encodeURIComponent(apiUrl), {
                     headers: {'Accept': 'image/webp'}
                 });
                 
