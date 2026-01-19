@@ -35,8 +35,9 @@ class RoWebApp {
 
         this.BATCH_SIZE = 10;
         this.PROXY_SERVERS = [
+            "https://cors-anywhere.com/",
             "https://api.allorigins.win/raw?url=",
-            "https://corsproxy.io/?url=",
+            //"https://corsproxy.io/?url=",
             "https://api.codetabs.com/v1/proxy?quest=",
            // "https://api.cors.lol/?url=",
            // "https://crossorigin.me/"
