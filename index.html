@@ -89,8 +89,33 @@
     </div> 
 
     <div id='div_myroweb' style="display:none;" class='block content-section'>
-        <ht>ROWEB Favorite Discovery</ht><br><hd>There's nothing here yet...</hd>
-        <div class='container'></div> 
+        <ht>ROWEB A Favorite Discovery</ht><br><hd>...Like your account page! [InDev]</hd>
+        <div class='container'style='font-size:20px;'>
+            Whazup! This page will be filled soon<br>
+            <button style='color:black;'onclick="switchdiv('settings_div_1')">Settings</button>
+            <br>
+            <div id='settings_div_1' style="display:none;">
+                    <b>Nickname</b><br>Roblox1234<br><br>
+                    <b>Backgrounds</b><br>
+                    <div class='center'>
+                        <button onclick="settings('togglebg')">Toggle Background</button><br>
+                        <button onclick="settings('togglebginterval')">Toggle Auto-Change</button><br>
+                        <button onclick="settings('togglebgnext')">Next Background</button>
+                    </div><br>
+                    <b>Other</b>
+                    <div class='center'>
+                        <button onclick='alert("Sorry pal, There`s nothing here yet... :c")'>Toggle Guest</button>
+                    </div>
+                    <div class='center'>
+                        <button onclick="exportSettings()">Export Settings</button>
+                        <small>Or</small>
+                        <button onclick="importSettings()">Import Settings</button>
+                        <input type="file" id="importSettings" accept=".json" style="display: none;">
+                    </div>
+            </div>
+            <br>
+            <img class='place' onclick="sfx('Short spring sound')" src='data/main/bowling pin.png'>
+        </div> 
     </div>
 
     <div id='div_games' style="display:block;" class='block content-section'>

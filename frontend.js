@@ -251,14 +251,27 @@ class RoWebApp {
         };
     }
 
-    switchdiv(hideId, showId, displayType = 'block') {
-        const hideElement = document.getElementById(hideId);
-        const showElement = document.getElementById(showId);
-        if (hideElement) hideElement.style.display = 'none';
-        if (showElement) showElement.style.display = displayType;
-        if (document.getElementById) {
+    switchdiv(element1Id, element2Id = null, displayType = 'block') {
+        const element1 = document.getElementById(element1Id);
+        if (!element1) return;
+        
+        if (!element2Id) {
+            element1.style.display = element1.style.display === 'none' ? displayType : 'none';
+        } else {
+            const element2 = document.getElementById(element2Id);
+            if (element2) {
+                const isElement1Visible = element1.style.display !== 'none';
+                
+                element1.style.display = isElement1Visible ? 'none' : displayType;
+                element2.style.display = isElement1Visible ? displayType : 'none';
+            } else {
+                element1.style.display = element1.style.display === 'none' ? displayType : 'none';
+            }
+        }
+        
+        if (typeof this.sfx === 'function') {
             this.sfx('click');
-        };
+        }
     }
 
     setRandomBanner() {
@@ -1221,6 +1234,7 @@ function clearForm() { return app.clearForm(); }
 function loadDefaultList() { return app.loadDefaultList(); }
 function changePage(newPage) { return app.changePage(newPage); }
 function clearAllPlaces() { return app.clearAllPlaces(); }
+
 
 // Legacy functions for compatibility
 function initPage() {
