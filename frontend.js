@@ -33,7 +33,7 @@ class RoWebApp {
             audioPool: []
         };
 
-        this.BATCH_SIZE = 15;
+        this.BATCH_SIZE = 10;
         
         this.init();
     }
