@@ -34,16 +34,7 @@ class RoWebApp {
         };
 
         this.BATCH_SIZE = 15;
-        this.PROXY_SERVERS = [
-            //"https://cors-anywhere.com/",
-          //  "https://api.allorigins.win/raw?url=",
-          //  "https://corsproxy.io/?url=",
-           // "https://api.codetabs.com/v1/proxy?quest=",
-           // "roproxy.com"
-           // "https://api.cors.lol/?url=",
-           // "https://crossorigin.me/"
-        ];
-
+        
         this.init();
     }
 
@@ -764,35 +755,33 @@ class RoWebApp {
         
         const apiUrl = `https://thumbnails.roproxy.com/v1/places/gameicons?placeIds=${uncachedIds.join(',')}&size=${size}x${size}&format=Png&isCircular=false`;
         
-        for (const proxy of this.PROXY_SERVERS) {
-            try {
-                const response = await fetch(encodeURIComponent(apiUrl), {
-                    headers: {'Accept': 'image/webp'}
-                });
-                
-                if (!response.ok) continue;
-                
-                const data = await response.json();
-                if (data.data && Array.isArray(data.data)) {
-                    data.data.forEach(item => {
-                        if (item.imageUrl) {
-                            const cacheKey = `${item.targetId}_${size}`;
-                            this.state.thumbnailCache.set(cacheKey, item.imageUrl);
-                            result[item.targetId] = item.imageUrl;
-                        }
-                    });
-                    this.saveThumbnailCache();
-                    return result;
-                }
-            } catch (e) {
-                console.error(`Proxy error (${proxy}):`, e);
+        try {
+            const response = await fetch(apiUrl);
+            
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
             }
+            
+            const data = await response.json();
+            if (data.data && Array.isArray(data.data)) {
+                data.data.forEach(item => {
+                    if (item.imageUrl) {
+                        const cacheKey = `${item.targetId}_${size}`;
+                        this.state.thumbnailCache.set(cacheKey, { url: item.imageUrl, timestamp: Date.now() });
+                        result[item.targetId] = item.imageUrl;
+                    }
+                });
+                this.saveThumbnailCache();
+                return result;
+            }
+        } catch (error) {
+            console.error('Thumbnail fetch error:', error);
         }
         
         // Cache failures
         uncachedIds.forEach(id => {
             const cacheKey = `${id}_${size}`;
-            this.state.thumbnailCache.set(cacheKey, null);
+            this.state.thumbnailCache.set(cacheKey, { url: null, timestamp: Date.now() });
             result[id] = null;
         });
         
