@@ -33,8 +33,13 @@ class RoWebApp {
             audioPool: []
         };
 
-        this.BATCH_SIZE = 30;
-        
+        this.BATCH_SIZE = 10;
+        this.PROXY_SERVERS = [
+            "https://api.allorigins.win/raw?url=",
+            "https://corsproxy.io/?",
+            "https://api.codetabs.com/v1/proxy?quest="
+        ];
+
         this.init();
     }
 
@@ -753,35 +758,37 @@ class RoWebApp {
         
         if (uncachedIds.length === 0) return result;
         
-        const apiUrl = `https://thumbnails.roproxy.com/v1/places/gameicons?placeIds=${uncachedIds.join(',')}&size=${size}x${size}&format=Png&isCircular=false`;
+        const apiUrl = `https://thumbnails.roblox.com/v1/places/gameicons?placeIds=${uncachedIds.join(',')}&size=${size}x${size}&format=Png&isCircular=false`;
         
-        try {
-            const response = await fetch(apiUrl);
-            
-            if (!response.ok) {
-                throw new Error(`HTTP error! status: ${response.status}`);
-            }
-            
-            const data = await response.json();
-            if (data.data && Array.isArray(data.data)) {
-                data.data.forEach(item => {
-                    if (item.imageUrl) {
-                        const cacheKey = `${item.targetId}_${size}`;
-                        this.state.thumbnailCache.set(cacheKey, { url: item.imageUrl, timestamp: Date.now() });
-                        result[item.targetId] = item.imageUrl;
-                    }
+        for (const proxy of this.PROXY_SERVERS) {
+            try {
+                const response = await fetch(proxy + encodeURIComponent(apiUrl), {
+                    headers: {'Accept': 'image/webp'}
                 });
-                this.saveThumbnailCache();
-                return result;
+                
+                if (!response.ok) continue;
+                
+                const data = await response.json();
+                if (data.data && Array.isArray(data.data)) {
+                    data.data.forEach(item => {
+                        if (item.imageUrl) {
+                            const cacheKey = `${item.targetId}_${size}`;
+                            this.state.thumbnailCache.set(cacheKey, item.imageUrl);
+                            result[item.targetId] = item.imageUrl;
+                        }
+                    });
+                    this.saveThumbnailCache();
+                    return result;
+                }
+            } catch (e) {
+                console.error(`Proxy error (${proxy}):`, e);
             }
-        } catch (error) {
-            console.error('Thumbnail fetch error:', error);
         }
         
         // Cache failures
         uncachedIds.forEach(id => {
             const cacheKey = `${id}_${size}`;
-            this.state.thumbnailCache.set(cacheKey, { url: null, timestamp: Date.now() });
+            this.state.thumbnailCache.set(cacheKey, null);
             result[id] = null;
         });
         
@@ -1227,6 +1234,7 @@ function clearForm() { return app.clearForm(); }
 function loadDefaultList() { return app.loadDefaultList(); }
 function changePage(newPage) { return app.changePage(newPage); }
 function clearAllPlaces() { return app.clearAllPlaces(); }
+
 
 
 // Legacy functions for compatibility
