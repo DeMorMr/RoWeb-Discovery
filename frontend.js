@@ -33,13 +33,8 @@ class RoWebApp {
             audioPool: []
         };
 
-        this.BATCH_SIZE = 10;
-        this.PROXY_SERVERS = [
-            "https://api.allorigins.win/raw?url=",
-            "https://corsproxy.io/?",
-            "https://api.codetabs.com/v1/proxy?quest="
-        ];
-
+        this.BATCH_SIZE = 15;
+        
         this.init();
     }
 
@@ -111,15 +106,7 @@ class RoWebApp {
     initThumbnailCache() {
         const cached = this.storageGet('thumbnailCache', {});
         Object.entries(cached).forEach(([key, value]) => {
-            if (typeof value === 'string') {
-                this.state.thumbnailCache.set(key, { 
-                    url: value, 
-                    timestamp: Date.now() - 1000
-                });
-            } else if (value && value.url) {
-
-                this.state.thumbnailCache.set(key, value);
-            }
+            this.state.thumbnailCache.set(key, { url: value, timestamp: Date.now() });
         });
     }
 
@@ -716,34 +703,12 @@ class RoWebApp {
     }
 
     // ==================== THUMBNAIL MANAGEMENT ====================
-async loadThumbnails(placesToShow, size = 128) {
-    for (let i = 0; i < placesToShow.length; i += this.BATCH_SIZE) {
-        const batch = placesToShow.slice(i, i + this.BATCH_SIZE);
-        
-        batch.forEach(place => {
-            const img = document.getElementById(`img-${place.originalIndex}`);
-            if (img) {
-                img.onerror = () => {
-                    img.src = 'data/main/NewFrontPageGuy.png';
-                    img.onerror = null;
-                };
-                img.src = 'data/main/loading.webp';
-            }
-        });
-        
-        try {
+    async loadThumbnails(placesToShow, size = 128) {
+        for (let i = 0; i < placesToShow.length; i += this.BATCH_SIZE) {
+            const batch = placesToShow.slice(i, i + this.BATCH_SIZE);
             await this.processThumbnailBatch(batch, size);
-        } catch (error) {
-            console.error('Error loading thumbnails:', error);
-            batch.forEach(place => {
-                const img = document.getElementById(`img-${place.originalIndex}`);
-                if (img) {
-                    img.src = 'data/main/NewFrontPageGuy.png';
-                }
-            });
         }
     }
-}
 
     async processThumbnailBatch(batch, size) {
         const placeIds = batch.map(place => place.id).filter(id => id && id.length >= 7);
@@ -776,68 +741,47 @@ async loadThumbnails(placesToShow, size = 128) {
         const uncachedIds = [];
         const result = {};
         
-
-        const oneWeekAgo = Date.now() - (1 * 24 * 60 * 60 * 1000);
-        
+        // Check cache first
         placeIds.forEach(id => {
             const cacheKey = `${id}_${size}`;
-            const cached = this.state.thumbnailCache.get(cacheKey);
-            
-
-            if (cached && cached.url && cached.timestamp > oneWeekAgo) {
-                result[id] = cached.url;
+            if (this.state.thumbnailCache.has(cacheKey)) {
+                result[id] = this.state.thumbnailCache.get(cacheKey).url;
             } else {
                 uncachedIds.push(id);
-
-                if (cached) this.state.thumbnailCache.delete(cacheKey);
             }
         });
         
         if (uncachedIds.length === 0) return result;
         
-        const apiUrl = `https://thumbnails.roblox.com/v1/places/gameicons?placeIds=${uncachedIds.join(',')}&size=${size}x${size}&format=Png&isCircular=false`;
+        const apiUrl = `https://thumbnails.roproxy.com/v1/places/gameicons?placeIds=${uncachedIds.join(',')}&size=${size}x${size}&format=Png&isCircular=false`;
         
-
-        for (const proxy of this.PROXY_SERVERS) {
-            try {
-                const response = await fetch(proxy + encodeURIComponent(apiUrl), {
-                    headers: {'Accept': 'application/json'},
-                    timeout: 5000
-                });
-                
-                if (!response.ok) continue;
-                
-                const data = await response.json();
-                if (data.data && Array.isArray(data.data)) {
-                    data.data.forEach(item => {
-                        if (item.imageUrl) {
-                            const cacheKey = `${item.targetId}_${size}`;
-                            const cacheValue = {
-                                url: item.imageUrl,
-                                timestamp: Date.now()
-                            };
-                            this.state.thumbnailCache.set(cacheKey, cacheValue);
-                            result[item.targetId] = item.imageUrl;
-                        }
-                    });
-                    
-        
-                    this.saveThumbnailCache();
-                    return result;
-                }
-            } catch (e) {
-                console.warn(`Proxy ${proxy} failed:`, e.message);
-                continue;
+        try {
+            const response = await fetch(apiUrl);
+            
+            if (!response.ok) {
+                throw new Error(`HTTP error! status: ${response.status}`);
             }
+            
+            const data = await response.json();
+            if (data.data && Array.isArray(data.data)) {
+                data.data.forEach(item => {
+                    if (item.imageUrl) {
+                        const cacheKey = `${item.targetId}_${size}`;
+                        this.state.thumbnailCache.set(cacheKey, { url: item.imageUrl, timestamp: Date.now() });
+                        result[item.targetId] = item.imageUrl;
+                    }
+                });
+                this.saveThumbnailCache();
+                return result;
+            }
+        } catch (error) {
+            console.error('Thumbnail fetch error:', error);
         }
         
-
+        // Cache failures
         uncachedIds.forEach(id => {
             const cacheKey = `${id}_${size}`;
-            this.state.thumbnailCache.set(cacheKey, {
-                url: null,
-                timestamp: Date.now()
-            });
+            this.state.thumbnailCache.set(cacheKey, { url: null, timestamp: Date.now() });
             result[id] = null;
         });
         
@@ -846,22 +790,16 @@ async loadThumbnails(placesToShow, size = 128) {
     }
 
     saveThumbnailCache() {
-        const oneWeekAgo = Date.now() - (1 * 24 * 60 * 60 * 1000);
-        
-        const validEntries = [...this.state.thumbnailCache.entries()]
-            .filter(([key, value]) => {
-                if (!value || !value.timestamp || value.timestamp < oneWeekAgo) {
-                    return false;
-                }
-                return true;
-            })
-            .slice(0, 300);
-        
-        this.state.thumbnailCache.clear();
-        validEntries.forEach(([key, value]) => this.state.thumbnailCache.set(key, value));
+        if (this.state.thumbnailCache.size > 500) {
+            const entries = [...this.state.thumbnailCache.entries()]
+                .sort((a, b) => b[1].timestamp - a[1].timestamp)
+                .slice(0, 300);
+            this.state.thumbnailCache.clear();
+            entries.forEach(([key, value]) => this.state.thumbnailCache.set(key, value));
+        }
         
         const cacheObj = Object.fromEntries(
-            validEntries.map(([k, v]) => [k, v])
+            [...this.state.thumbnailCache.entries()].map(([k, v]) => [k, v?.url || null])
         );
         this.storageSet('thumbnailCache', cacheObj);
     }
@@ -869,20 +807,6 @@ async loadThumbnails(placesToShow, size = 128) {
     clearThumbnailCache() {
         this.state.thumbnailCache.clear();
         this.storageSet('thumbnailCache', {});
-    }
-
-    clearBrokenThumbnailCache() {
-        console.log("Clearing thumbnail cache...");
-        this.state.thumbnailCache.clear();
-        this.storageSet('thumbnailCache', {});
-        
-
-        document.querySelectorAll('.place img, .UserPlace img').forEach(img => {
-            img.src = 'data/main/loading.webp';
-        });
-        
-        this.sfx("collide");
-        alert("Thumbnail cache cleared. Thumbnails will reload.");
     }
 
     // ==================== COOL PLACES ====================
@@ -1304,9 +1228,6 @@ function loadDefaultList() { return app.loadDefaultList(); }
 function changePage(newPage) { return app.changePage(newPage); }
 function clearAllPlaces() { return app.clearAllPlaces(); }
 
-function clearThumbnailCache() { 
-    return app.clearBrokenThumbnailCache(); 
-}
 
 // Legacy functions for compatibility
 function initPage() {
