@@ -703,7 +703,7 @@ class RoWebApp {
     }
 
     // ==================== THUMBNAIL MANAGEMENT ====================
-    async loadThumbnails(placesToShow, size = 32) { //128
+    async loadThumbnails(placesToShow, size = 128) {
         for (let i = 0; i < placesToShow.length; i += this.BATCH_SIZE) {
             const batch = placesToShow.slice(i, i + this.BATCH_SIZE);
             await this.processThumbnailBatch(batch, size);
@@ -737,7 +737,7 @@ class RoWebApp {
         }
     }
 
-    async getBatchThumbnailUrls(placeIds, size = 32) { //128
+    async getBatchThumbnailUrls(placeIds, size = 128) {
         const uncachedIds = [];
         const result = {};
         
@@ -852,7 +852,7 @@ class RoWebApp {
             if (placeIds.length === 0) continue;
             
             try {
-                const thumbnails = await this.getBatchThumbnailUrls(placeIds, 32); //128
+                const thumbnails = await this.getBatchThumbnailUrls(placeIds, 128);
                 validPlaces.forEach(place => {
                     const img = document.querySelector(`.UserPlace img[data-place-id="${place.id}"]`);
                     if (img) {
