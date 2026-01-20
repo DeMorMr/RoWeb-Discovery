@@ -33,7 +33,7 @@ class RoWebApp {
             audioPool: []
         };
 
-        this.BATCH_SIZE = 5;
+        this.BATCH_SIZE = 30;
         
         this.init();
     }
@@ -753,7 +753,7 @@ class RoWebApp {
         
         if (uncachedIds.length === 0) return result;
         
-        const apiUrl = `https://api.codetabs.com/v1/proxy?quest=` + `https://thumbnails.roproxy.com/v1/places/gameicons?placeIds=${uncachedIds.join(',')}&size=${size}x${size}&format=Png&isCircular=false`;
+        const apiUrl = `https://thumbnails.roproxy.com/v1/places/gameicons?placeIds=${uncachedIds.join(',')}&size=${size}x${size}&format=Png&isCircular=false`;
         
         try {
             const response = await fetch(apiUrl);
